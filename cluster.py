@@ -4,9 +4,6 @@ from streamlit_folium import folium_static
 import folium
 import pandas as pd 
 import numpy as np 
-#import pydeck as pdk 
-#import altair as alt 
-#from datetime import datetime
 import matplotlib.pyplot as plt
 plt.style.use('fivethirtyeight')
 
@@ -14,10 +11,6 @@ plt.style.use('fivethirtyeight')
 # Membaca dataset
 data = pd.read_csv("DataSkripsiGempa.csv", sep = ";")
 tabel = data[["time", "place", "depth", "mag"]]
-#gempa = tabel[["depth", "mag"]]
-#df = pd.read_csv("DataFix.csv")
-#df = df[["latitude", "longitude", "mag", "depth", "k-means"]]
-#kmeans = df[["latitude","longitude","k-means"]]
 datamap = pd.read_csv("FoliumMap.csv", sep=',')
 data2 = np.array(datamap)
 
@@ -25,19 +18,19 @@ data2 = np.array(datamap)
 sidebar = st.sidebar
 
 mode = sidebar.radio("Mode", ["EDA", "Clustering"])
-st.markdown("<h1 style='text-align: center; color: #ff0000;'>Pengelompokan Daerah Rawan Gempa Bumi di Pulau Sumatera</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center; color: #ff0000;'>Pengelompokan Daerah Rawan Gempa Bumi di Pulau Sumatra</h1>", unsafe_allow_html=True)
 st.markdown("# Mode: {}".format(mode), unsafe_allow_html=True)
 
 ##EDA
 if mode=="EDA":
-    show_data = sidebar.checkbox("Data Gempa Bumi Pulau Sumatera")
+    show_data = sidebar.checkbox("Data Gempa Bumi Pulau Sumatra")
     #distribute = sidebar.checkbox("Distribusi Data")
     scatter = sidebar.checkbox("Scatter Plot")
 
     if show_data:
-        st.title("Data Gempa Bumi di Pulau Sumatera")
+        st.markdown("### Data Gempa Bumi di Pulau Sumatra")
         st.write(tabel)
-        st.title("Statistika Deskriptif")
+        st.markdown("### Statistik Deskriptif")
         desk = tabel.describe()
         st.dataframe(data=desk)
 
@@ -55,7 +48,7 @@ if mode=="EDA":
         #st.pyplot(fig2)
 
     if scatter:
-        st.title("Scatterplot Data")
+        st.markdown("### Scatterplot Data")
         fig3 = plt.figure(figsize=(18,8))
         plt.scatter(tabel['depth'], tabel['mag'])
         plt.ylabel('Magnitudo (mb)')
@@ -72,11 +65,12 @@ if mode=="Clustering":
         
 
     if clust:
-        st.markdown("### K-Means Clustering")
+        st.markdown("### Hasil Pengelompokan Algoritma K-Means")
         st.write(datamap)
 
     if map:
-        map_clust = folium.Map(location=[datamap.latitude.mean(), datamap.longitude.mean()], tiles='OpenStreetMap',zoom_start=5)
+        st.markdown("### Pemetaan Daerah Rawan Gempa Bumi di Pulau Sumatra")
+        map_clust = folium.Map(location=[datamap.latitude.mean(), datamap.longitude.mean()], tiles='OpenStreetMap',zoom_start=5, control_scale=True)
         
         # get a colour
         def color_producer(cluster):
@@ -116,6 +110,6 @@ if mode=="Clustering":
             fill_opacity=0.9).add_to(pg)
             pg.add_to(map_clust)
     
-        map_clust.add_child(folium.LayerControl(collapsed=False)) 
+        map_clust.add_child(folium.LayerControl(collapsed=True)) 
 
         folium_static(map_clust)
