@@ -6,14 +6,13 @@ import pandas as pd
 import numpy as np 
 import matplotlib.pyplot as plt
 #plt.style.use('fivethirtyeight')
-
+st.set_page_config(layout="wide")
 
 # Membaca dataset
 data = pd.read_csv("DataSkripsiGempa.csv", sep = ";")
 tabel = data[["latitude","longitude","place", "depth", "mag"]]
 datamap = pd.read_csv("FoliumMap.csv", sep=',')
 data2 = np.array(datamap)
-
 
 sidebar = st.sidebar
 
