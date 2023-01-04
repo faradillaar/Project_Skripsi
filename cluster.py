@@ -5,12 +5,12 @@ import folium
 import pandas as pd 
 import numpy as np 
 import matplotlib.pyplot as plt
-plt.style.use('fivethirtyeight')
+#plt.style.use('fivethirtyeight')
 
 
 # Membaca dataset
 data = pd.read_csv("DataSkripsiGempa.csv", sep = ";")
-tabel = data[["time", "place", "depth", "mag"]]
+tabel = data[["latitude","longitude","place", "depth", "mag"]]
 datamap = pd.read_csv("FoliumMap.csv", sep=',')
 data2 = np.array(datamap)
 
@@ -21,6 +21,9 @@ mode = sidebar.radio("Mode", ["EDA", "Clustering"])
 st.markdown("<h1 style='text-align: center; color: #ff0000;'>Pengelompokan Daerah Rawan Gempa Bumi di Pulau Sumatra</h1>", unsafe_allow_html=True)
 st.markdown("# Mode: {}".format(mode), unsafe_allow_html=True)
 
+#membagi kolom menjadi 2 bagian
+col1, col2 = st.columns((2,1))
+
 ##EDA
 if mode=="EDA":
     show_data = sidebar.checkbox("Data Gempa Bumi Pulau Sumatra")
@@ -28,11 +31,13 @@ if mode=="EDA":
     scatter = sidebar.checkbox("Scatter Plot")
 
     if show_data:
-        st.markdown("### Data Gempa Bumi di Pulau Sumatra")
-        st.write(tabel)
-        st.markdown("### Statistik Deskriptif")
-        desk = tabel.describe()
-        st.dataframe(data=desk)
+        with col1:
+            st.markdown("### Data Gempa Bumi di Pulau Sumatra")
+            st.write(tabel)
+        with col2:
+            st.markdown("### Statistik Deskriptif")
+            desk = tabel[["depth", "mag"]].describe()
+            st.dataframe(data=desk)
 
     #if distribute:
         #st.title("Distribusi Data")
